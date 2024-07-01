@@ -70,8 +70,8 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                       filled: true,
                       fillColor: Colors.grey[150],
-                      contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
                     ),
                   ),
                 ),
@@ -84,14 +84,16 @@ class _DetailPageState extends State<DetailPage> {
                     SizedBox(
                       child: TextButton(
                         style: ButtonStyle(
-                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          shape:
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
-                          backgroundColor:
-                          WidgetStateProperty.all<Color>(const Color.fromRGBO(0, 178, 255, 1)),
-                          foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                          backgroundColor: WidgetStateProperty.all<Color>(
+                              const Color.fromRGBO(0, 178, 255, 1)),
+                          foregroundColor:
+                              WidgetStateProperty.all<Color>(Colors.black),
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {

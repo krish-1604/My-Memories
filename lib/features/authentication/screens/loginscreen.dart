@@ -17,15 +17,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Consumer<AuthenticationProvider>(
       builder: (context, auth, child) => Scaffold(
+        backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
+            const Image(
               image: AssetImage("assets/logo.png"),
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(80, 0, 80, 0),
+                padding: const EdgeInsets.fromLTRB(80, 0, 80, 0),
                 child: SizedBox(
                   child: ElevatedButton(
                     style: ButtonStyle(
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: WidgetStateProperty.all<double>(10),
                     ),
                     onPressed: signIn,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FaIcon(

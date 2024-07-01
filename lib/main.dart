@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mymemories/Apis/Pref_Service.dart';
 import 'package:mymemories/SplashScreen/splashscreen.dart';
+import 'package:mymemories/features/Form/Database/DbHelper.dart';
 import 'package:mymemories/features/HomePage/provider/home_provider.dart';
 import 'package:mymemories/features/authentication/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-      runApp(const MyApp());
-  });
+  await DbHelper.dbHelper.initDb();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (_) {
+      PrefHelper.prefLoad().then(
+        (value) {
+          runApp(const MyApp());
+        },
+      );
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -20,14 +28,13 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>  {
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
-
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
