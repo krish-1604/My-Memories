@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mymemories/features/Form/screens/uuid1.dart';
+import 'package:mymemories/features/Form/provider/Form_Provider.dart';
+import 'package:mymemories/features/HomePage/screens/HomePage.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
-import 'package:uuid/uuid.dart';
+
 class UploadImage extends StatefulWidget {
-  String title;
-  String keywords;
-  String details;
-  String fromDate;
-  String toDate;
-  UploadImage({super.key,required this.title,required this.keywords,required this.details,required this.fromDate,required this.toDate});
+  UploadImage({Key? key}) : super(key: key);
 
   @override
   State<UploadImage> createState() => _UploadImageState();
 }
 
 class _UploadImageState extends State<UploadImage> {
-  List<XFile> pickedImages = [];
-  final Uuid uuid = Uuid();
-  late String generatedUUID;
-
-  void generateUUID() {
-    setState(() {
-      generatedUUID = uuid.v4();
-    });
+  @override
+  void initState() {
+    super.initState();
+    final formProvider = Provider.of<FormProvider>(context,listen: false);
+    formProvider.generatedUUID = formProvider.uuid.v4();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<FormProvider>(
+        builder: (context,form,child)=>Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -50,7 +44,7 @@ class _UploadImageState extends State<UploadImage> {
         child: Column(
           children: [
             TextButton(
-              onPressed: pickImages,
+              onPressed: form.pickImages,
               child: const Text("Pick Images"),
             ),
             Expanded(
@@ -59,15 +53,16 @@ class _UploadImageState extends State<UploadImage> {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                     ),
-                    itemCount: pickedImages.length,
+                    itemCount: form.pickedImages.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Stack(
                         children: [
                           Image.file(
-                            File(pickedImages[index].path),
+                            File(form.pickedImages[index].path),
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
@@ -78,10 +73,11 @@ class _UploadImageState extends State<UploadImage> {
                               radius: 20,
                               backgroundColor: Colors.grey.shade200,
                               child: IconButton(
-                                icon: const Icon(Icons.close, color: Colors.grey),
+                                icon:
+                                    const Icon(Icons.close, color: Colors.grey),
                                 onPressed: () {
                                   setState(() {
-                                    pickedImages.removeAt(index);
+                                    form.pickedImages.removeAt(index);
                                   });
                                 },
                               ),
@@ -98,22 +94,34 @@ class _UploadImageState extends State<UploadImage> {
                       SizedBox(
                         child: TextButton(
                           style: ButtonStyle(
-                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
                             backgroundColor: WidgetStateProperty.all<Color>(
-                                pickedImages.isEmpty
+                                form.pickedImages.isEmpty
                                     ? Colors.grey
                                     : const Color.fromRGBO(0, 178, 255, 1)),
                             foregroundColor: WidgetStateProperty.all<Color>(
-                                pickedImages.isEmpty ? Colors.black45 : Colors.black),
+                                form.pickedImages.isEmpty
+                                    ? Colors.black45
+                                    : Colors.black),
                           ),
-                          onPressed: pickedImages.isEmpty ? null : () {
-                            generateUUID();
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Uuid1(uuid: generatedUUID,)));
-                          },
+                          onPressed: form.pickedImages.isEmpty
+                              ? null
+                              : () {
+                                  form.generatedUUID;
+                                  form.insertMemory();
+                                  form.clearForm();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Homepage(),
+                                    ), (route) => false,
+                                  );
+                                },
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Row(
@@ -136,20 +144,7 @@ class _UploadImageState extends State<UploadImage> {
           ],
         ),
       ),
+    ),
     );
-  }
-
-  Future<void> pickImages() async {
-    final picker = ImagePicker();
-    try {
-      List<XFile>? selectedImages = await picker.pickMultiImage();
-      if (selectedImages != null && selectedImages.isNotEmpty) {
-        setState(() {
-          pickedImages.addAll(selectedImages);
-        });
-      }
-    } catch (e) {
-      print('Error picking images: $e');
-    }
   }
 }

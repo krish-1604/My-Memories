@@ -1,5 +1,3 @@
-import 'package:image_picker/image_picker.dart';
-
 class FormModel {
   late String id;
   late String title;
@@ -7,7 +5,7 @@ class FormModel {
   late String toDate;
   late String keywords;
   late String details;
-  late List<XFile> images;
+  // List<XFile> Images = [];
 
   FormModel({
     required this.id,
@@ -16,32 +14,27 @@ class FormModel {
     required this.toDate,
     required this.keywords,
     required this.details,
-    this.images = const [],
   });
 
-  FormModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    fromDate = json['fromDate'];
-    toDate = json['toDate'];
-    keywords = json['keywords'];
-    details = json['details'];
-    if (json['images'] != null) {
-      images = (json['images'] as List).map((i) => XFile(i)).toList();
-    } else {
-      images = [];
-    }
+  factory FormModel.fromJson(Map<String, dynamic> json) {
+    return FormModel(
+      id: json['id'],
+      title: json['title'],
+      fromDate: json['fromDate'],
+      toDate: json['toDate'],
+      keywords: json['keywords'],
+      details: json['details'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['fromDate'] = this.fromDate;
-    data['toDate'] = this.toDate;
-    data['keywords'] = this.keywords;
-    data['details'] = this.details;
-    data['images'] = this.images.map((i) => i.path).toList();
-    return data;
+    return {
+      'id': id,
+      'title': title,
+      'fromDate': fromDate,
+      'toDate': toDate,
+      'keywords': keywords,
+      'details': details,
+    };
   }
 }
