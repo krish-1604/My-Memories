@@ -110,6 +110,7 @@ class FormProvider extends ChangeNotifier{
     toDateController.clear();
     detailsController.clear();
     keywordsController.clear();
+    pickedImages.clear();
   }
   @override
   void dispose() {

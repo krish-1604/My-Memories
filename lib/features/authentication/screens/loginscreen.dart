@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mymemories/Apis/google_signin_api.dart';
-import 'package:mymemories/features/HomePage/screens/HomePage.dart';
 import 'package:mymemories/features/authentication/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       shadowColor: WidgetStateProperty.all<Color>(Colors.grey.shade300),
                       elevation: WidgetStateProperty.all<double>(10),
                     ),
-                    onPressed: signIn,
+                    onPressed: () => auth.signIn(context),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -60,16 +58,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future signIn() async {
-    final user = await GoogleSigninApi.login();
-    if (user == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Sign in Failed")));
-    } else {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => Homepage(user: user)));
-    }
   }
 }

@@ -11,15 +11,6 @@ class Formpage extends StatefulWidget {
 }
 
 class _FormpageState extends State<Formpage> {
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  // final TextEditingController _titleController = TextEditingController();
-  // final TextEditingController _fromDateController = TextEditingController();
-  // final TextEditingController _toDateController = TextEditingController();
-  // final TextEditingController _keywordsController = TextEditingController();
-  //
-  // String? fromDate;
-  // String? toDate;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<FormProvider>(
@@ -29,6 +20,7 @@ class _FormpageState extends State<Formpage> {
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
+              form.clearForm();
             },
             icon: const Icon(Icons.arrow_back_ios),
           ),
@@ -182,54 +174,4 @@ class _FormpageState extends State<Formpage> {
       ),
     );
   }
-
-  // Future<void> _selectFromDate() async {
-  //   DateTime? picked1 = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(1800),
-  //     lastDate: DateTime(2200),
-  //   );
-  //   if (picked1 != null) {
-  //     setState(() {
-  //       _fromDateController.text = picked1.toString().split(" ")[0];
-  //       fromDate = "${picked1.toString().split(" ")[0]}T00:00:00.000Z";
-  //     });
-  //   }
-  // }
-  //
-  // Future<void> _selectToDate() async {
-  //   DateTime? picked2 = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(1800),
-  //     lastDate: DateTime(2200),
-  //   );
-  //   if (picked2 != null) {
-  //     if (fromDate != null && picked2.isBefore(DateTime.parse(fromDate!.split("T")[0]))) {
-  //       showDialog (
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return AlertDialog(
-  //             title: const Text("Invalid Date"),
-  //             content: const Text("To Date should be greater than From Date"),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: const Text("OK"),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     } else {
-  //       setState(() {
-  //         _toDateController.text = picked2.toString().split(" ")[0];
-  //         toDate = "${picked2.toString().split(" ")[0]}T00:00:00.000Z";
-  //       });
-  //     }
-  //   }
-  // }
 }

@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mymemories/Apis/google_signin_api.dart';
+import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
 import 'package:mymemories/features/Form/screens/FormPage.dart';
-import 'package:mymemories/features/HomePage/screens/MemoryPage.dart';
+import 'package:mymemories/features/authentication/provider/auth_provider.dart';
 import 'package:mymemories/features/authentication/screens/loginscreen.dart';
 import 'package:provider/provider.dart';
-
 class Homepage extends StatefulWidget {
-  GoogleSignInAccount? user;
-
-  Homepage({super.key, this.user});
-
+  Homepage({super.key});
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
   String? profileImage;
-
+  late DirectoryData directoryData;
   @override
   void initState() {
     super.initState();
+    final formProvider = Provider.of<FormProvider>(context,listen: false);
+    formProvider.fetchMemories();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FormProvider>(
-      builder: (context, form, child) => Scaffold(
+    return Consumer2<FormProvider,AuthenticationProvider>(
+      builder: (context, form, auth,child) => Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
@@ -73,7 +71,7 @@ class _HomepageState extends State<Homepage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                   prefixIcon: Icon(Icons.search),
                 ),
               ),
@@ -85,18 +83,12 @@ class _HomepageState extends State<Homepage> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: form.allMemories.length==0 ? Text('Nothing to show') : ListTile(
+                    child: ListTile(
                       title: Text(form.allMemories[index].title),
                       subtitle: Text("${form.allMemories[index].fromDate} to ${form.allMemories[index].toDate}"),
                       trailing: Icon(Icons.arrow_forward),
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MemoryPage(
-                          title: form.allMemories[index].title,
-                          details: form.allMemories[index].details,
-                          fromDate: form.allMemories[index].fromDate,
-                          toDate: form.allMemories[index].toDate,
-                          keywords: form.allMemories[index].keywords,
-                        )));
+                      onTap: () async {
+                        directoryData.navigateToImages(context,form.titleController.text,form.detailsController.text,form.fromDate,form.toDate,form.keywordsController.text,directoryData.DirectoryDataList1[index].images);
                       },
                     ),
                   );
@@ -108,13 +100,4 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
-
-  // displayImage() {
-  //   profileImage = widget.user?.photoUrl;
-  //   if (profileImage == null) {
-  //     return const AssetImage('assets/default_user.png');
-  //   } else {
-  //     return NetworkImage(profileImage!);
-  //   }
-  // }
 }
