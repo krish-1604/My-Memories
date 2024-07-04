@@ -7,7 +7,7 @@ class FormModel {
   late String toDate;
   late String keywords;
   late String details;
-  late List<String> imagesURLs;
+  late String imagesURL;
 
   FormModel({
     required this.id,
@@ -16,7 +16,7 @@ class FormModel {
     required this.toDate,
     required this.keywords,
     required this.details,
-    required this.imagesURLs,
+    required this.imagesURL,
   });
 
   factory FormModel.fromJson(Map<String, dynamic> json) {
@@ -27,9 +27,7 @@ class FormModel {
       toDate: json['toDate'] ?? '',
       keywords: json['keywords'] ?? '',
       details: json['details'] ?? '',
-      imagesURLs: json['imagesURLs'] != null
-          ? List<String>.from(jsonDecode(json['imagesURLs']))
-          : [],
+      imagesURL: json['imagesURL'] ?? '',
     );
   }
 
@@ -41,7 +39,7 @@ class FormModel {
       'toDate': toDate,
       'keywords': keywords,
       'details': details,
-      'imagesURLs': jsonEncode(imagesURLs),
+      'imagesURL': jsonEncode(imagesURL),
     };
   }
 }

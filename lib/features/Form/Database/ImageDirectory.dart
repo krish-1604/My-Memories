@@ -46,7 +46,7 @@ class DirectoryData extends ChangeNotifier {
   }
 
   Future<void> loadSavedImages() async {
-    String mainDirectoryName = "My Memories";
+    String mainDirectoryName = "MyMemories";
     String mainDirectoryPath = await createMainDirectory(mainDirectoryName);
     List<DirectoryData> directoryDataList = [];
     Directory mainDir = Directory(mainDirectoryPath);
@@ -75,7 +75,7 @@ class DirectoryData extends ChangeNotifier {
     }
   }
 
-  SaveImages(String mainDirectoryName) async {
+  SaveImages(String mainDirectoryName,form) async {
     String mainDirectoryPath = await createMainDirectory(mainDirectoryName);
     String subDirectoryPath = await createSubDirectory(mainDirectoryPath);
     List<String> imagepaths = [];
@@ -84,9 +84,11 @@ class DirectoryData extends ChangeNotifier {
       File newImage = await File(image.path).copy(newFilePath);
       print("Image saved at: ${newImage.path}");
       imagepaths.add(newImage.path);
+
     }
     // await triggerMediaScan(subDirectoryPath);
     await loadSavedImages();
+    form.insertMemory(imagepaths);
   }
   // Future<void> triggerMediaScan(String path) async {
   //   try {
@@ -96,10 +98,22 @@ class DirectoryData extends ChangeNotifier {
   //   }
   // }
 
-  void navigateToImages(BuildContext context,FormModel formModel,List<XFile> images) {
+  void navigateToImages(BuildContext context,FormModel formModel) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MemoryPage(formModel: formModel)),
     );
+  }
+
+  deleteFolder(String folderName) async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    String folderPath = '${directory.path}/$folderName';
+
+    if (await Directory(folderPath).exists()) {
+      await Directory(folderPath).delete(recursive: true);
+      print('Folder deleted: $folderPath');
+    } else {
+      print('Folder does not exist: $folderPath');
+    }
   }
 }

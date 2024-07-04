@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mymemories/Apis/google_signin_api.dart';
 import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
@@ -25,8 +23,6 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     final formProvider = Provider.of<FormProvider>(context, listen: false);
     formProvider.fetchMemories();
-
-    // Initialize directoryData here
     directoryData = DirectoryData(formProvider);
   }
 
@@ -90,14 +86,14 @@ class _HomepageState extends State<Homepage> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final data = form.allMemories[index];
-                  final path = "/storage/emulated/0/Android/data/com.mymemories/files/My Memories/${data.id}";
-                  Directory directory = Directory(path);
-                  List<String> imagePaths = [];
-
-                  print(path);
-                  final imge = directoryData.DirectoryDataList1.where((element) => element.uuid == data.id,).toList();
-                  // print(data.id);
-                  // print(imge);
+                  // // final path = "/storage/emulated/0/Android/data/com.mymemories/files/MyMemories/${data.id}";
+                  // // Directory directory = Directory(path);
+                  // // List<String> imagePaths = [];
+                  //
+                  // // print(path);
+                  // final imge = directoryData.DirectoryDataList1.where((element) => element.uuid == data.id,).toList();
+                  // // print(data.id);
+                  // // print(imge);
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
@@ -109,7 +105,6 @@ class _HomepageState extends State<Homepage> {
                         directoryData.navigateToImages(
                           context,
                           data,
-                          form.pickedImages,
                         );
                       },
                     ),

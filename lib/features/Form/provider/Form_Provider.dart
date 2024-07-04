@@ -20,8 +20,7 @@ class FormProvider extends ChangeNotifier {
   List<FormModel> allMemories = [];
   late String fromDate;
   late String toDate;
-  DirectoryData? directoryData;
-  String mainDirectoryName = "My Memories";
+  String mainDirectoryName = "MyMemories";
 
   Future<void> selectFromDate(BuildContext context) async {
     DateTime? picked1 = await showDatePicker(
@@ -94,8 +93,9 @@ class FormProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  insertMemory() async {
+  insertMemory(imagesURLs) async {
     print("Date===========> $fromDate");
+    print("imagesURLs$imagesURLs");
     FormModel formModel = FormModel(
       id: generatedUUID,
       title: titleController.text,
@@ -103,7 +103,7 @@ class FormProvider extends ChangeNotifier {
       toDate: toDate,
       keywords: keywordsController.text,
       details: detailsController.text,
-      imagesURLs: directoryData?.SaveImages(mainDirectoryName).imagepaths,
+      imagesURL: imagesURLs.join(', '),
     );
     await dbHelper.insertNewMemory(formModel);
     allMemories.add(formModel);
