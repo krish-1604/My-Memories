@@ -16,6 +16,7 @@ class DbHelper {
   final String toDateColumn = 'toDate';
   final String keywordsColumn = 'keywords';
   final String detailsColumn = 'details';
+  final String imagesURLColumn = 'imagesURL';
 
   Future<void> initDatabase() async {
     database = await connectToDatabase();
@@ -35,7 +36,8 @@ class DbHelper {
             $fromDateColumn TEXT,
             $toDateColumn TEXT,
             $keywordsColumn TEXT,
-            $detailsColumn TEXT
+            $detailsColumn TEXT,
+            $imagesURLColumn TEXT
           )
         ''');
       },
@@ -47,7 +49,8 @@ class DbHelper {
             $fromDateColumn TEXT,
             $toDateColumn TEXT,
             $keywordsColumn TEXT,
-            $detailsColumn TEXT
+            $detailsColumn TEXT,
+            $imagesURLColumn TEXT
           )
         ''');
       },

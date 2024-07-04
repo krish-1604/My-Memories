@@ -116,13 +116,10 @@ class _UploadImageState extends State<UploadImage> {
                                 : () async {
                               form.generatedUUID;
                               await directoryData.SaveImages("My Memories");
+
                               form.insertMemory();
                               form.clearForm();
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => Homepage()),
-                                    (route) => false,
-                              );
+                              // directoryData.navigateToImages(context, form.titleController.text, form.detailsController.text, form.fromDate, form.toDate, form.keywordsController.text, form.pickedImages);
                             },
                             child: const Padding(
                               padding: EdgeInsets.all(8.0),

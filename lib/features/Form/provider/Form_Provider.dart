@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mymemories/features/Form/Database/DbHelper.dart';
+import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
 import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:uuid/uuid.dart';
 
-class FormProvider extends ChangeNotifier{
+class FormProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
@@ -19,6 +20,8 @@ class FormProvider extends ChangeNotifier{
   List<FormModel> allMemories = [];
   late String fromDate;
   late String toDate;
+  DirectoryData? directoryData;
+  String mainDirectoryName = "My Memories";
 
   Future<void> selectFromDate(BuildContext context) async {
     DateTime? picked1 = await showDatePicker(
@@ -28,9 +31,9 @@ class FormProvider extends ChangeNotifier{
       lastDate: DateTime(2200),
     );
     if (picked1 != null) {
-        fromDateController.text = picked1.toString().split(" ")[0];
-        fromDate = "${picked1.toString().split(" ")[0]}";
-        notifyListeners();
+      fromDateController.text = picked1.toString().split(" ")[0];
+      fromDate = "${picked1.toString().split(" ")[0]}";
+      notifyListeners();
     }
   }
 
@@ -43,7 +46,7 @@ class FormProvider extends ChangeNotifier{
     );
     if (picked2 != null) {
       if (picked2.isBefore(DateTime.parse(fromDate.split("T")[0]))) {
-        showDialog (
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -61,50 +64,64 @@ class FormProvider extends ChangeNotifier{
           },
         );
       } else {
-          toDateController.text = picked2.toString().split(" ")[0];
-          toDate = "${picked2.toString().split(" ")[0]}";
-          notifyListeners();
+        toDateController.text = picked2.toString().split(" ")[0];
+        toDate = "${picked2.toString().split(" ")[0]}";
+        notifyListeners();
       }
     }
   }
 
   Future<void> pickImages() async {
-      final picker = ImagePicker();
-      try {
-        List<XFile>? selectedImages = await picker.pickMultiImage();
-        if (selectedImages.isNotEmpty) {
-          pickedImages.addAll(selectedImages);
-          notifyListeners();
-        }
-      } catch (e) {
-        print('Error picking images: $e');
+    final picker = ImagePicker();
+    try {
+      List<XFile>? selectedImages = await picker.pickMultiImage();
+      if (selectedImages.isNotEmpty) {
+        pickedImages.addAll(selectedImages);
+        notifyListeners();
       }
+      // List<String> selectedImgPath = [];
+      //
+      // for(var i in selectedImages){
+      //   selectedImgPath.add(i.path);
+      // }
+    } catch (e) {
+      print('Error picking images: $e');
     }
+  }
 
   Future<void> fetchMemories() async {
-      allMemories = await dbHelper.getAllMemories();
-      notifyListeners();
+    allMemories = await dbHelper.getAllMemories();
+    notifyListeners();
   }
-  Future<void> insertMemory() async {
+
+  insertMemory() async {
+    print("Date===========> $fromDate");
     FormModel formModel = FormModel(
-      id: generatedUUID, title: titleController.text, fromDate: fromDate, toDate: toDate, keywords: keywordsController.text, details: detailsController.text,
+      id: generatedUUID,
+      title: titleController.text,
+      fromDate: fromDate,
+      toDate: toDate,
+      keywords: keywordsController.text,
+      details: detailsController.text,
+      imagesURLs: directoryData?.SaveImages(mainDirectoryName).imagepaths,
     );
     await dbHelper.insertNewMemory(formModel);
     allMemories.add(formModel);
     await fetchMemories();
   }
-  Future<void> updateMemories(FormModel formModel) async{
-   await dbHelper.updateMemory(formModel);
-   await fetchMemories();
+
+  Future<void> updateMemories(FormModel formModel) async {
+    await dbHelper.updateMemory(formModel);
+    await fetchMemories();
   }
 
-  Future<void> deleteMemory(FormModel formModel) async{
+  Future<void> deleteMemory(FormModel formModel) async {
     await dbHelper.deleteMemory(formModel);
     allMemories.remove(formModel);
     notifyListeners();
   }
 
-  clearForm(){
+  clearForm() {
     titleController.clear();
     fromDateController.clear();
     toDateController.clear();
@@ -112,6 +129,7 @@ class FormProvider extends ChangeNotifier{
     keywordsController.clear();
     pickedImages.clear();
   }
+
   @override
   void dispose() {
     titleController.dispose();

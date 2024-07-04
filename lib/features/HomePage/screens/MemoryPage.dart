@@ -1,22 +1,26 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mymemories/features/Form/models/FormModel.dart';
 
 class MemoryPage extends StatefulWidget {
-  final String title;
-  final String details;
-  final String fromDate;
-  final String toDate;
-  final String keywords;
-  final List<File> images;
+  final FormModel formModel;
+  // final String title;
+  // final String details;
+  // final String fromDate;
+  // final String toDate;
+  // final String keywords;
+  // final List<XFile>? images;
 
   MemoryPage({
     Key? key,
-    required this.title,
-    required this.details,
-    required this.fromDate,
-    required this.toDate,
-    required this.keywords,
-    required this.images,
+    required this.formModel,
+    // required this.title,
+    // required this.details,
+    // required this.fromDate,
+    // required this.toDate,
+    // required this.keywords,
+    // this.images,
   }) : super(key: key);
 
   @override
@@ -49,7 +53,7 @@ class _MemoryPageState extends State<MemoryPage> {
           children: [
             Center(
               child: Text(
-                widget.title,
+                widget.formModel.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
@@ -61,7 +65,7 @@ class _MemoryPageState extends State<MemoryPage> {
             ),
             Center(
               child: Text(
-                "${widget.fromDate} to ${widget.toDate}",
+                "${widget.formModel.fromDate} to ${widget.formModel.toDate}",
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 14,
@@ -72,33 +76,40 @@ class _MemoryPageState extends State<MemoryPage> {
             SizedBox(
               height: 15,
             ),
-            GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0,
-              ),
-              itemCount: widget.images.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImage(imagePath: widget.images[index].path),
-                      ),
-                    );
-                  },
-                  child: Image.file(widget.images[index], fit: BoxFit.cover),
-                );
-              },
-            ),
+
+            // widget.images != [] ?
+            //
+            // Container(
+            //   height: 300, // Set a fixed height for the GridView
+            //   child: GridView.builder(
+            //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //       crossAxisCount: 3,
+            //       crossAxisSpacing: 4.0,
+            //       mainAxisSpacing: 4.0,
+            //     ),
+            //     itemCount: widget.images!.length ?? 0,
+            //     itemBuilder: (context, index) {
+            //       File imageFile = File(widget.images![index].path);
+            //       return GestureDetector(
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => FullScreenImage(imagePath: imageFile.path),
+            //             ),
+            //           );
+            //         },
+            //         child: Image.file(imageFile, fit: BoxFit.cover),
+            //       );
+            //     },
+            //   ),
+            // ):SizedBox(),
             SizedBox(
               height: 15,
             ),
             Center(
               child: Text(
-                "${widget.details}",
+                "${widget.formModel.details}",
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 18,

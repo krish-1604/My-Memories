@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
 import 'package:mymemories/features/HomePage/screens/MemoryPage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,8 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DirectoryData extends ChangeNotifier {
-  List<File> images = [];
-  static const platform = MethodChannel('com.example.app/mediaScanner');
+  List<XFile> images = [];
+  static const platform = MethodChannel('com.mymemories/mediaScanner');
   List<DirectoryData> DirectoryDataList1 = [];
   late FormProvider formProvider;
   late String uuid = formProvider.generatedUUID;
@@ -67,37 +68,38 @@ class DirectoryData extends ChangeNotifier {
     List<FileSystemEntity> entities = directory.listSync();
     for (var entity in entities) {
       if (entity is File && (entity.path.endsWith('.jpg')|| entity.path.endsWith('.png')|| entity.path.endsWith('.jpeg'))) {
-        directoryData.images.add(entity);
+        directoryData.images.add(XFile(entity.path));
       } else if (entity is Directory) {
         await fetchImagesRecursively(entity.path, directoryData);
       }
     }
   }
 
-  Future<void> SaveImages(String mainDirectoryName) async {
+  SaveImages(String mainDirectoryName) async {
     String mainDirectoryPath = await createMainDirectory(mainDirectoryName);
     String subDirectoryPath = await createSubDirectory(mainDirectoryPath);
-
+    List<String> imagepaths = [];
     for (XFile image in formProvider.pickedImages) {
       String newFilePath = '$subDirectoryPath/${image.name}';
       File newImage = await File(image.path).copy(newFilePath);
       print("Image saved at: ${newImage.path}");
+      imagepaths.add(newImage.path);
     }
-    await triggerMediaScan(subDirectoryPath);
+    // await triggerMediaScan(subDirectoryPath);
     await loadSavedImages();
   }
-  Future<void> triggerMediaScan(String path) async {
-    try {
-      await platform.invokeMethod('scanFile', {'path': path});
-    } on PlatformException catch (e) {
-      print("Error triggering media scan: $e");
-    }
-  }
+  // Future<void> triggerMediaScan(String path) async {
+  //   try {
+  //     await platform.invokeMethod('scanFile', {'path': path});
+  //   } on PlatformException catch (e) {
+  //     print("Error triggering media scan: $e");
+  //   }
+  // }
 
-  void navigateToImages(BuildContext context,String title,String details,String fromDate,String toDate,String keywords,List<File> images) {
+  void navigateToImages(BuildContext context,FormModel formModel,List<XFile> images) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MemoryPage(title: title, details: details, fromDate: fromDate, toDate: toDate, keywords: keywords,images: images,)),
+      MaterialPageRoute(builder: (context) => MemoryPage(formModel: formModel)),
     );
   }
 }
