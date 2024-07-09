@@ -4,6 +4,8 @@ import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
 import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
 import 'package:mymemories/features/HomePage/screens/HomePage.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class MemoryPage extends StatefulWidget {
   final FormModel formModel;
@@ -18,6 +20,7 @@ class _MemoryPageState extends State<MemoryPage> {
   List<String> images = [];
   final FormProvider formProvider = FormProvider();
   final DirectoryData directoryData = DirectoryData(FormProvider());
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +28,8 @@ class _MemoryPageState extends State<MemoryPage> {
   }
 
   void stringtoList() {
-    String removedoublequotes = widget.formModel.imagesURL.replaceAll('"', "");
+    String removedoublequotes =
+    widget.formModel.imagesURL.replaceAll('"', "");
     String removedoublequotes2 = removedoublequotes.replaceAll(" ", "");
     images = removedoublequotes2.split(",");
   }
@@ -47,9 +51,12 @@ class _MemoryPageState extends State<MemoryPage> {
             TextButton(
               child: Text('Delete'),
               onPressed: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> Homepage()), (Route<dynamic> route) => false);
-                    directoryData.deleteFolder(widget.formModel.id);
-                    formProvider.deleteMemory(widget.formModel);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Homepage()),
+                        (Route<dynamic> route) => false);
+                directoryData.deleteFolder(widget.formModel.id);
+                formProvider.deleteMemory(widget.formModel);
               },
             ),
           ],
@@ -57,7 +64,6 @@ class _MemoryPageState extends State<MemoryPage> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +129,10 @@ class _MemoryPageState extends State<MemoryPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FullScreenImage(imagePath: images[index]),
+                          builder: (context) => FullScreenImage(
+                            images: images,
+                            initialIndex: index,
+                          ),
                         ),
                       );
                     },
@@ -154,29 +163,30 @@ class _MemoryPageState extends State<MemoryPage> {
                 width: 140,
                 child: TextButton(
                   style: ButtonStyle(
-                    shape:
-                    WidgetStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                     ),
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.blue),
                   ),
-                    onPressed: (){
-                      deletememoryconfirmation(context);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                            "Delete",
-                          style: TextStyle(
-                            color: Colors.white
-                          ),
-                        ),
-                        Icon(Icons.delete_outline,color: Colors.white,),
-                      ],
-                    ),
+                  onPressed: () {
+                    deletememoryconfirmation(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Delete",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -188,8 +198,11 @@ class _MemoryPageState extends State<MemoryPage> {
 }
 
 class FullScreenImage extends StatelessWidget {
-  final String imagePath;
-  const FullScreenImage({Key? key, required this.imagePath}) : super(key: key);
+  final List<String> images;
+  final int initialIndex;
+
+  FullScreenImage({Key? key, required this.images, required this.initialIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -211,13 +224,27 @@ class FullScreenImage extends StatelessWidget {
         ),
       ),
       body: Container(
-        color: Colors.black,
-        child: Center(
-          child: InteractiveViewer(
-            child: Image.file(File(imagePath)),
+        child: PhotoViewGallery.builder(
+          itemCount: images.length,
+          builder: (context, index) {
+            return PhotoViewGalleryPageOptions(
+              imageProvider: FileImage(
+                File(images[index]),
+              ),
+              minScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered * 2,
+              initialScale: PhotoViewComputedScale.contained,
+              heroAttributes: PhotoViewHeroAttributes(tag: images[index]),
+            );
+          },
+          scrollPhysics: BouncingScrollPhysics(),
+          backgroundDecoration: BoxDecoration(
+            color: Colors.black,
           ),
+          pageController: PageController(initialPage: initialIndex),
         ),
       ),
     );
   }
 }
+

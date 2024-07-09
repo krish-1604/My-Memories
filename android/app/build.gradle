@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.mymemories"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -38,20 +38,27 @@ android {
             storeFile file('upload-keystore.jks')
             storePassword 'krishmehta'
         }
+        release {
+            keyAlias 'upload'
+            keyPassword 'krishmehta'
+            storeFile file('upload-keystore.jks')
+            storePassword 'krishmehta'
+        }
     }
     defaultConfig {
         applicationId = "com.mymemories"
-        minSdk = 19
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 21
+        targetSdk = 33
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
     buildTypes {
         debug {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
         }
     }
 }

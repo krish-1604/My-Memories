@@ -50,16 +50,16 @@ class _HomepageState extends State<Homepage> {
               "assets/small_logo.png",
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                GoogleSigninApi.logout();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              },
-              child: Icon(Icons.exit_to_app),
-            ),
-          ],
+          // actions: [
+          //   TextButton(
+          //     onPressed: () {
+          //       GoogleSigninApi.logout();
+          //       Navigator.pushReplacement(context,
+          //           MaterialPageRoute(builder: (context) => LoginScreen()));
+          //     },
+          //     child: Icon(Icons.exit_to_app),
+          //   ),
+          // ],
         ),
         body: Column(
           children: [

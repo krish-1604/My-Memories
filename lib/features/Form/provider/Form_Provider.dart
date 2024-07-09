@@ -27,7 +27,7 @@ class FormProvider extends ChangeNotifier {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1800),
-      lastDate: DateTime(2200),
+      lastDate: DateTime.now(),
     );
     if (picked1 != null) {
       fromDateController.text = picked1.toString().split(" ")[0];
@@ -41,7 +41,7 @@ class FormProvider extends ChangeNotifier {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1800),
-      lastDate: DateTime(2200),
+      lastDate: DateTime.now(),
     );
     if (picked2 != null) {
       if (picked2.isBefore(DateTime.parse(fromDate.split("T")[0]))) {

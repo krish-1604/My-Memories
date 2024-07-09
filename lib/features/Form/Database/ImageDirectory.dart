@@ -106,9 +106,9 @@ class DirectoryData extends ChangeNotifier {
   }
 
   deleteFolder(String folderName) async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    String folderPath = '${directory.path}/$folderName';
-
+    String directory = '/storage/emulated/0/Android/data/com.mymemories/files/MyMemories/';
+    String folderPath = '${directory}$folderName';
+    print("trying to delete");
     if (await Directory(folderPath).exists()) {
       await Directory(folderPath).delete(recursive: true);
       print('Folder deleted: $folderPath');
