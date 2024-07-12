@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
+import 'package:mymemories/features/HomePage/screens/MemoriesPage.dart';
 import 'package:mymemories/features/HomePage/screens/MemoryPage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -101,7 +102,7 @@ class DirectoryData extends ChangeNotifier {
   void navigateToImages(BuildContext context,FormModel formModel) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MemoryPage(formModel: formModel)),
+      MaterialPageRoute(builder: (context) => Memoriespage(formModel: formModel)),
     );
   }
 

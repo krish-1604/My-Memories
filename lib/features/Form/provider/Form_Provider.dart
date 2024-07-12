@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mymemories/features/Form/Database/DbHelper.dart';
-import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
 import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,7 +19,15 @@ class FormProvider extends ChangeNotifier {
   List<FormModel> allMemories = [];
   late String fromDate;
   late String toDate;
+  List<String> hashtags = [];
+  String currentInput = '';
   String mainDirectoryName = "MyMemories";
+  String hashtagstring  = '';
+  List<FormModel> searchResults = [];
+
+  hashtaglisttostring(){
+    hashtagstring = hashtags.join(",").replaceAll("#","");
+  }
 
   Future<void> selectFromDate(BuildContext context) async {
     DateTime? picked1 = await showDatePicker(
@@ -101,7 +108,7 @@ class FormProvider extends ChangeNotifier {
       title: titleController.text,
       fromDate: fromDate,
       toDate: toDate,
-      keywords: keywordsController.text,
+      keywords: hashtagstring,
       details: detailsController.text,
       imagesURL: imagesURLs.join(', '),
     );
@@ -121,6 +128,26 @@ class FormProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void handlehashtagInput(String input) {
+      currentInput = input;
+      if (input.endsWith(' ')) {
+        if (currentInput.trim().isNotEmpty) {
+          if (!currentInput.trim().startsWith('#')) {
+            currentInput = '#${currentInput.trim()}';
+          }
+          hashtags.add(currentInput.trim());
+          keywordsController.clear();
+          currentInput = '';
+        }
+      }
+      notifyListeners();
+  }
+
+  void removeHashtag(String hashtag) {
+      hashtags.remove(hashtag);
+      notifyListeners();
+  }
+
   clearForm() {
     titleController.clear();
     fromDateController.clear();
@@ -128,6 +155,7 @@ class FormProvider extends ChangeNotifier {
     detailsController.clear();
     keywordsController.clear();
     pickedImages.clear();
+    hashtags = [];
   }
 
   @override

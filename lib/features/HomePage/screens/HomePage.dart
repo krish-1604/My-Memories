@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mymemories/Apis/google_signin_api.dart';
 import 'package:mymemories/features/Form/Database/ImageDirectory.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
 import 'package:mymemories/features/Form/screens/FormPage.dart';
 import 'package:mymemories/features/authentication/provider/auth_provider.dart';
-import 'package:mymemories/features/authentication/screens/loginscreen.dart';
 import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
@@ -17,6 +15,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   String? profileImage;
   late DirectoryData directoryData;
+  final FormProvider formProvider = FormProvider();
 
   @override
   void initState() {
@@ -50,16 +49,6 @@ class _HomepageState extends State<Homepage> {
               "assets/small_logo.png",
             ),
           ),
-          // actions: [
-          //   TextButton(
-          //     onPressed: () {
-          //       GoogleSigninApi.logout();
-          //       Navigator.pushReplacement(context,
-          //           MaterialPageRoute(builder: (context) => LoginScreen()));
-          //     },
-          //     child: Icon(Icons.exit_to_app),
-          //   ),
-          // ],
         ),
         body: Column(
           children: [
@@ -78,6 +67,9 @@ class _HomepageState extends State<Homepage> {
                   EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                   prefixIcon: Icon(Icons.search),
                 ),
+                // onChanged: (query){
+                //   form.searchMemories(query);
+                // },
               ),
             ),
             Expanded(
@@ -86,14 +78,6 @@ class _HomepageState extends State<Homepage> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final data = form.allMemories[index];
-                  // // final path = "/storage/emulated/0/Android/data/com.mymemories/files/MyMemories/${data.id}";
-                  // // Directory directory = Directory(path);
-                  // // List<String> imagePaths = [];
-                  //
-                  // // print(path);
-                  // final imge = directoryData.DirectoryDataList1.where((element) => element.uuid == data.id,).toList();
-                  // // print(data.id);
-                  // // print(imge);
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
