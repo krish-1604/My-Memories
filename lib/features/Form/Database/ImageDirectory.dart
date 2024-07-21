@@ -91,6 +91,20 @@ class DirectoryData extends ChangeNotifier {
     await loadSavedImages();
     form.insertMemory(imagepaths);
   }
+  SaveImages2(String mainDirectoryName,form) async {
+    String mainDirectoryPath = await createMainDirectory(mainDirectoryName);
+    String subDirectoryPath = await createSubDirectory(mainDirectoryPath);
+    List<String> imagepaths = [];
+    for (XFile image in formProvider.pickedImages) {
+      String newFilePath = '$subDirectoryPath/${image.name}';
+      File newImage = await File(image.path).copy(newFilePath);
+      print("Image saved at: ${newImage.path}");
+      imagepaths.add(newImage.path);
+    }
+    // await triggerMediaScan(subDirectoryPath);
+    await loadSavedImages();
+    form.insertMemorysingleday(imagepaths);
+  }
   // Future<void> triggerMediaScan(String path) async {
   //   try {
   //     await platform.invokeMethod('scanFile', {'path': path});

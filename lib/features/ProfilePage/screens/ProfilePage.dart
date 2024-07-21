@@ -32,9 +32,9 @@ class _ProfilepageState extends State<Profilepage> {
         }, icon: Icon(Icons.arrow_back_ios)),
         centerTitle: true,
         title: Image(
-          height: 30,
+          height: 76,
           image: AssetImage(
-            "assets/small_logo.png",
+            "assets/dark_logo.png",
           ),
         ),
       ),

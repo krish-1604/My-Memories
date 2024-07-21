@@ -5,6 +5,7 @@ import 'package:mymemories/features/Form/models/FormModel.dart';
 import 'package:mymemories/features/Form/provider/Form_Provider.dart';
 import 'package:mymemories/features/HomePage/screens/HomePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mymemories/features/HomePage/screens/MemoriesEditPage.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -32,7 +33,7 @@ class _MemoriespageState extends State<Memoriespage> {
   void onItemTapped(int index) {
     if (index == _selectedIndex) {
       setState(() {
-        _selectedIndex = -1; // Deselect if tapped again
+        _selectedIndex = -1;
       });
       return;
     }
@@ -43,7 +44,12 @@ class _MemoriespageState extends State<Memoriespage> {
 
     switch (index) {
       case 0: // edit
-        // Handle edit functionality here
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MemoriesEditpage(
+                      formModel: widget.formModel,
+                    )));
         break;
       case 1: // delete
         deleteMemoryConfirmation(context);
@@ -64,11 +70,27 @@ class _MemoriespageState extends State<Memoriespage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete Memory"),
-          content: Text("Are you sure you want to delete this memory?"),
+          backgroundColor: Color(0xFF060913),
+          title: Text(
+            "Delete Memory",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          content: Text(
+            "Are you sure you want to delete this memory?",
+            style: TextStyle(
+              color: Colors.grey[500],
+            ),
+          ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
               onPressed: () {
                 setState(() {
                   _selectedIndex = -1; // Reset the selection
@@ -77,7 +99,12 @@ class _MemoriespageState extends State<Memoriespage> {
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -99,149 +126,189 @@ class _MemoriespageState extends State<Memoriespage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF060913),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
         ),
         title: Text(
           widget.formModel.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
+            color: Colors.white,
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: CarouselSlider.builder(
-                  options: CarouselOptions(
-                    height: 500.0,
-                    enlargeCenterPage: true,
-                    autoPlay: false,
-                    aspectRatio: 16 / 9,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enableInfiniteScroll: false,
-                    viewportFraction: 0.7,
-                  ),
-                  itemCount: images.length,
-                  itemBuilder: (context, index, realIdx) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullScreenImage(
-                              images: images,
-                              initialIndex: index,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          child: Stack(
-                            children: <Widget>[
-                              Image.file(File(images[index]),
-                                  fit: BoxFit.cover, width: 1000.0),
-                              Positioned(
-                                bottom: 0.0,
-                                left: 0.0,
-                                right: 0.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Color.fromARGB(200, 0, 0, 0),
-                                        Color.fromARGB(0, 0, 0, 0)
-                                      ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                    ),
-                                  ),
+      body: Container(
+        color: Color(0xFF060913),
+        child: ListView(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: CarouselSlider.builder(
+                    options: CarouselOptions(
+                      height: 500.0,
+                      enlargeCenterPage: true,
+                      autoPlay: false,
+                      aspectRatio: 16 / 9,
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enableInfiniteScroll: false,
+                      viewportFraction: 0.7,
+                    ),
+                    itemCount: images.length,
+                    itemBuilder: (context, index, realIdx) {
+                      return Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImage(
+                                  images: images,
+                                  initialIndex: index,
                                 ),
                               ),
-                            ],
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(5.0),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                              child: Stack(
+                                children: <Widget>[
+                                  Image.file(
+                                      File(images[index].replaceAll(r'\', '')),
+                                      fit: BoxFit.cover,
+                                      width: 1000.0),
+                                  Positioned(
+                                    bottom: 0.0,
+                                    left: 0.0,
+                                    right: 0.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xFF060913),
+                                            Color(0xFF060913),
+                                          ],
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
-                  borderRadius: BorderRadius.circular(30),
+                SizedBox(
+                  height: 20,
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Text(
-                      "${widget.formModel.fromDate}    to   ${widget.formModel.toDate}",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 2, 93, 164),
-                        fontSize: 16,
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF0A0F1F),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade200,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            "${widget.formModel.details}",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 2, 93, 164),
-                              fontSize: 16,
+                      widget.formModel.toDate != null &&
+                              widget.formModel.toDate.isNotEmpty
+                          ? Text(
+                              "${widget.formModel.fromDate}    to   ${widget.formModel.toDate}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            )
+                          : Text(
+                              "${widget.formModel.fromDate}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0F162F),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.blue,
+                              width: 3,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              "${widget.formModel.details}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      if (widget.formModel.keywords.isNotEmpty) ...{
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Hashtags:${widget.formModel.keywords}",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      },
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF060913),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: InkWell(
               onTap: () => onItemTapped(0),
-              child: Icon(Icons.edit_outlined),
+              child: Icon(color: Colors.white, Icons.edit_outlined),
             ),
             label: 'Edit',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
               onTap: () => onItemTapped(1),
-              child: Icon(Icons.delete_outline),
+              child: Icon(color: Colors.white, Icons.delete_outline),
             ),
             label: 'Delete',
           ),
         ],
         currentIndex: _selectedIndex != -1 ? _selectedIndex : 0,
-        selectedItemColor: _selectedIndex != -1 ? Colors.blue : Colors.grey,
+        selectedItemColor: _selectedIndex != -1 ? Colors.blue : Colors.white,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         onTap: onItemTapped,
       ),
     );
@@ -271,7 +338,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF060913),
       body: Stack(
         children: [
           GestureDetector(
@@ -279,6 +346,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
             child: PhotoViewGallery.builder(
               itemCount: widget.images.length,
               builder: (context, index) {
+                print("paths-------------------${widget.images}");
                 return PhotoViewGalleryPageOptions(
                   imageProvider: FileImage(
                     File(widget.images[index]),
@@ -292,7 +360,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
               },
               scrollPhysics: BouncingScrollPhysics(),
               backgroundDecoration: BoxDecoration(
-                color: Colors.black,
+                color: Color(0xFF060913),
               ),
               pageController: PageController(initialPage: widget.initialIndex),
             ),

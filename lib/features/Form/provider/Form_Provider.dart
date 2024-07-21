@@ -12,6 +12,7 @@ class FormProvider extends ChangeNotifier {
   final TextEditingController toDateController = TextEditingController();
   final TextEditingController keywordsController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
+  final TextEditingController DateController = TextEditingController();
   List<XFile> pickedImages = [];
   final DbHelper dbHelper = DbHelper.dbHelper;
   final Uuid uuid = Uuid();
@@ -24,18 +25,62 @@ class FormProvider extends ChangeNotifier {
   String mainDirectoryName = "MyMemories";
   String hashtagstring  = '';
   List<FormModel> searchResults = [];
+  late String singleDate;
+
+  Future<bool> onWillPop1(BuildContext context) async {
+    clearForm1();
+    return true;
+  }
+
+  Future<bool> onWillPop2(BuildContext context) async {
+    clearForm2();
+    return true;
+  }
 
   hashtaglisttostring(){
     hashtagstring = hashtags.join(",").replaceAll("#","");
   }
+  Future<void> selectSingleDate(BuildContext context) async {
+    final ThemeData theme = ThemeData.dark().copyWith(
+      colorScheme: ColorScheme.dark(primary: Colors.blue),
+    );
+    DateTime? picked3 = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1800),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: theme,
+          child: child!,
+        );
+      },
+    );
+    if (picked3 != null) {
+      DateController.text = picked3.toString().split(" ")[0];
+      singleDate = "${picked3.toString().split(" ")[0]}";
+      notifyListeners();
+    }
+  }
 
   Future<void> selectFromDate(BuildContext context) async {
+    final ThemeData theme = ThemeData.dark().copyWith(
+      colorScheme: ColorScheme.dark(primary: Colors.blue),
+    );
+
     DateTime? picked1 = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: theme,
+          child: child!,
+        );
+      },
     );
+
     if (picked1 != null) {
       fromDateController.text = picked1.toString().split(" ")[0];
       fromDate = "${picked1.toString().split(" ")[0]}";
@@ -44,11 +89,21 @@ class FormProvider extends ChangeNotifier {
   }
 
   Future<void> selectToDate(BuildContext context) async {
+    final ThemeData theme = ThemeData.dark().copyWith(
+      colorScheme: ColorScheme.dark(primary: Colors.blue),
+    );
+
     DateTime? picked2 = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: theme,
+          child: child!,
+        );
+      },
     );
     if (picked2 != null) {
       if (picked2.isBefore(DateTime.parse(fromDate.split("T")[0]))) {
@@ -97,8 +152,16 @@ class FormProvider extends ChangeNotifier {
 
   Future<void> fetchMemories() async {
     allMemories = await dbHelper.getAllMemories();
+
+    allMemories.sort((a, b) {
+      final dateA = DateTime.parse(a.fromDate);
+      final dateB = DateTime.parse(b.fromDate);
+      return dateB.compareTo(dateA);
+    });
+
     notifyListeners();
   }
+
 
   insertMemory(imagesURLs) async {
     print("Date===========> $fromDate");
@@ -117,7 +180,23 @@ class FormProvider extends ChangeNotifier {
     await fetchMemories();
   }
 
-  Future<void> updateMemories(FormModel formModel) async {
+  insertMemorysingleday(imagesURLs) async {
+    print("imagesURLs:$imagesURLs");
+    FormModel formModel = FormModel(
+      id: generatedUUID,
+      title: titleController.text,
+      fromDate: DateController.text,
+      toDate: '',
+      keywords: hashtagstring,
+      details: detailsController.text,
+      imagesURL: imagesURLs.join(', '),
+    );
+    await dbHelper.insertNewMemory(formModel);
+    allMemories.add(formModel);
+    await fetchMemories();
+  }
+
+  updateMemories(FormModel formModel) async {
     await dbHelper.updateMemory(formModel);
     await fetchMemories();
   }
@@ -148,10 +227,18 @@ class FormProvider extends ChangeNotifier {
       notifyListeners();
   }
 
-  clearForm() {
+  clearForm1() {
     titleController.clear();
     fromDateController.clear();
     toDateController.clear();
+    detailsController.clear();
+    keywordsController.clear();
+    pickedImages.clear();
+    hashtags = [];
+  }
+  clearForm2(){
+    titleController.clear();
+    DateController.clear();
     detailsController.clear();
     keywordsController.clear();
     pickedImages.clear();

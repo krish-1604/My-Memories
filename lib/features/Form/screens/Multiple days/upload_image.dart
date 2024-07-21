@@ -26,18 +26,20 @@ class _UploadImageState extends State<UploadImage> {
     return Consumer<FormProvider>(
       builder: (context,form,child)=>Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xFF060913),
           automaticallyImplyLeading: false,
+          surfaceTintColor: Colors.transparent,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_ios),
+            icon: const Icon(color: Colors.white, Icons.arrow_back_ios),
           ),
           centerTitle: true,
           title: const Image(
-            height: 30,
+            height: 76,
             image: AssetImage(
-              "assets/small_logo.png",
+              "assets/dark_logo.png",
             ),
           ),
         ),
@@ -47,7 +49,7 @@ class _UploadImageState extends State<UploadImage> {
             children: [
               TextButton(
                 onPressed: form.pickImages,
-                child: const Text("Pick Images"),
+                child: const Text("Pick Images",style: TextStyle(color: Colors.blue),),
               ),
               Expanded(
                 child: ListView(
@@ -76,7 +78,7 @@ class _UploadImageState extends State<UploadImage> {
                                 backgroundColor: Colors.grey.shade200,
                                 child: IconButton(
                                   icon:
-                                  const Icon(Icons.close, color: Colors.grey),
+                                  const Icon(Icons.close, color: Colors.white),
                                   onPressed: () {
                                     setState(() {
                                       form.pickedImages.removeAt(index);
@@ -118,7 +120,7 @@ class _UploadImageState extends State<UploadImage> {
                               await directoryData.SaveImages("MyMemories",form);
 
                               // form.insertMemory();
-                              form.clearForm();
+                              form.clearForm1();
                               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> Homepage()), (Route<dynamic> route) => false);
                             },
                             child: const Padding(

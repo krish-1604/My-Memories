@@ -39,6 +39,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context)=> FormProvider()),
       ],
       child: MaterialApp(
+        theme: ThemeData(
+          scaffoldBackgroundColor: Color(0xFF060913),
+        ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
       ),
