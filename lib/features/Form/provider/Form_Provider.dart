@@ -23,9 +23,23 @@ class FormProvider extends ChangeNotifier {
   List<String> hashtags = [];
   String currentInput = '';
   String mainDirectoryName = "MyMemories";
-  String hashtagstring  = '';
-  List<FormModel> searchResults = [];
+  String hashtagstring = '';
   late String singleDate;
+  String searchQuery = '';
+
+  List<FormModel> get filteredMemories {
+    if (searchQuery.isEmpty) {
+      return allMemories;
+    }
+    return allMemories.where((memory) {
+      return memory.keywords.replaceAll("#", "").split(',').any((keyword) => keyword.trim().contains(searchQuery));
+    }).toList();
+  }
+
+  void setSearchQuery(String query) {
+    searchQuery = query;
+    notifyListeners();
+  }
 
   Future<bool> onWillPop1(BuildContext context) async {
     clearForm1();
@@ -37,9 +51,10 @@ class FormProvider extends ChangeNotifier {
     return true;
   }
 
-  hashtaglisttostring(){
-    hashtagstring = hashtags.join(",").replaceAll("#","");
+  hashtaglisttostring() {
+    hashtagstring = hashtags.join(",").replaceAll("#", "");
   }
+
   Future<void> selectSingleDate(BuildContext context) async {
     final ThemeData theme = ThemeData.dark().copyWith(
       colorScheme: ColorScheme.dark(primary: Colors.blue),
@@ -111,14 +126,30 @@ class FormProvider extends ChangeNotifier {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Invalid Date"),
-              content: const Text("To Date should be greater than From Date"),
+              backgroundColor: Color(0xFF060913),
+              title: const Text(
+                "Invalid Date",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              content: Text(
+                "To Date should be greater than From Date",
+                style: TextStyle(
+                  color: Colors.grey[500],
+                ),
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text("OK"),
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -161,7 +192,6 @@ class FormProvider extends ChangeNotifier {
 
     notifyListeners();
   }
-
 
   insertMemory(imagesURLs) async {
     print("Date===========> $fromDate");
@@ -208,23 +238,23 @@ class FormProvider extends ChangeNotifier {
   }
 
   void handlehashtagInput(String input) {
-      currentInput = input;
-      if (input.endsWith(' ')) {
-        if (currentInput.trim().isNotEmpty) {
-          if (!currentInput.trim().startsWith('#')) {
-            currentInput = '#${currentInput.trim()}';
-          }
-          hashtags.add(currentInput.trim());
-          keywordsController.clear();
-          currentInput = '';
+    currentInput = input;
+    if (input.endsWith(' ')) {
+      if (currentInput.trim().isNotEmpty) {
+        if (!currentInput.trim().startsWith('#')) {
+          currentInput = '#${currentInput.trim()}';
         }
+        hashtags.add(currentInput.trim());
+        keywordsController.clear();
+        currentInput = '';
       }
-      notifyListeners();
+    }
+    notifyListeners();
   }
 
   void removeHashtag(String hashtag) {
-      hashtags.remove(hashtag);
-      notifyListeners();
+    hashtags.remove(hashtag);
+    notifyListeners();
   }
 
   clearForm1() {
@@ -236,7 +266,8 @@ class FormProvider extends ChangeNotifier {
     pickedImages.clear();
     hashtags = [];
   }
-  clearForm2(){
+
+  clearForm2() {
     titleController.clear();
     DateController.clear();
     detailsController.clear();

@@ -99,13 +99,10 @@ class _HomepageState extends State<Homepage> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      // Border color and width when focused
                       borderRadius: BorderRadius.circular(30),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.white, width: 1.0),
-                      // Border color and width when not focused
+                      borderSide: BorderSide(color: Colors.white, width: 1.0),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     filled: true,
@@ -120,19 +117,20 @@ class _HomepageState extends State<Homepage> {
                       Icons.search,
                     ),
                   ),
-                  // onChanged: (query){
-                  //   form.searchMemories(query);
-                  // },
+                  onChanged: (value){
+                    form.setSearchQuery(value);
+                  },
                 ),
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: form.allMemories.length,
+                  itemCount: form.filteredMemories.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    final data = form.allMemories[index];
+                    final data = form.filteredMemories[index];
                     return Padding(
-                      padding: const EdgeInsets.only(top: 20.0,right: 16.0,left: 16.0),
+                      padding: const EdgeInsets.only(
+                          top: 20.0, right: 16.0, left: 16.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Color(0xFF0F162F),
@@ -144,17 +142,17 @@ class _HomepageState extends State<Homepage> {
                         ),
                         child: ListTile(
                           title: Text(
-                            form.allMemories[index].title,
+                            data.title,
                             style: TextStyle(color: Colors.white),
                           ),
-                          subtitle: form.allMemories[index].toDate != null &&
-                                  form.allMemories[index].toDate!.isNotEmpty
+                          subtitle: data.toDate != null &&
+                              data.toDate!.isNotEmpty
                               ? Text(
-                                  "${form.allMemories[index].fromDate} to ${form.allMemories[index].toDate}",
+                                  "${data.fromDate} to ${data.toDate}",
                                   style: TextStyle(color: Colors.white),
                                 )
                               : Text(
-                                  "${form.allMemories[index].fromDate}",
+                                  "${data.fromDate}",
                                   style: TextStyle(color: Colors.white),
                                 ),
                           trailing:

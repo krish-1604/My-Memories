@@ -93,7 +93,7 @@ class _MemoriespageState extends State<Memoriespage> {
               ),
               onPressed: () {
                 setState(() {
-                  _selectedIndex = -1; // Reset the selection
+                  _selectedIndex = -1;
                 });
                 Navigator.of(context).pop();
               },
